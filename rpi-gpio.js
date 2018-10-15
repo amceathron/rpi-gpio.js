@@ -299,6 +299,21 @@ function Gpio() {
         async.parallel(tasks, cb);
     };
 
+    // Coppying from the fork https://github.com/jordancn/rpi-gpio.js
+    this.unexportPin = function (pin, cb) {
+        var pins = [];
+        pins[currentPins[pin + '']] = true;
+         var tasks = Object.keys(pins)
+            .map(function(pin) {
+                return function(done) {
+                    removeListener(pin, pollers)
+                    unexportPin(pin, done);
+                }
+            });
+         async.parallel(tasks, cb);
+    };
+
+
     /**
      * Reset the state of the module
      */
